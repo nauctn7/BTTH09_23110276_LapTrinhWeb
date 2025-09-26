@@ -1,0 +1,83 @@
+type Query {
+    # Hiển thị product theo giá tăng dần
+    productsSortedByPriceAsc: [Product]
+
+    # Lấy tất cả product theo categoryId
+    productsByCategory(categoryId: ID!): [Product]
+
+    # CRUD đọc
+    users: [User]
+    products: [Product]
+    categories: [Category]
+
+    user(id: ID!): User
+    product(id: ID!): Product
+    category(id: ID!): Category
+}
+
+type Mutation {
+    # CRUD User
+    createUser(input: UserInput!): User
+    updateUser(id: ID!, input: UserInput!): User
+    deleteUser(id: ID!): Boolean
+
+    # CRUD Product
+    createProduct(input: ProductInput!): Product
+    updateProduct(id: ID!, input: ProductInput!): Product
+    deleteProduct(id: ID!): Boolean
+
+    # CRUD Category
+    createCategory(input: CategoryInput!): Category
+    updateCategory(id: ID!, input: CategoryInput!): Category
+    deleteCategory(id: ID!): Boolean
+}
+
+# ==== Entity ====
+type User {
+    id: ID!
+    fullname: String!
+    email: String!
+    phone: String
+    products: [Product]
+    categories: [Category]
+}
+
+type Product {
+    id: ID!
+    title: String!
+    description: String
+    quantity: Int!
+    price: Float!
+    user: User
+    category: Category
+}
+
+type Category {
+    id: ID!
+    name: String!
+    images: String
+    users: [User]
+    products: [Product]
+}
+
+# ==== Input ====
+input UserInput {
+    fullname: String!
+    email: String!
+    phone: String
+    password: String
+}
+
+input ProductInput {
+    title: String!
+    description: String
+    quantity: Int!
+    price: Float!
+    userId: ID!
+    categoryId: ID!
+}
+
+input CategoryInput {
+    name: String!
+    images: String
+}
