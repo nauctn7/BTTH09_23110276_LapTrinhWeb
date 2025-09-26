@@ -1,141 +1,132 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" isELIgnored="true" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Categories Management - GraphQL Store</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <title>Categories</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-store"></i> GraphQL Store
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/products">Products</a>
-                <a class="nav-link" href="/users">Users</a>
-                <a class="nav-link" href="/categories">Categories</a>
-            </div>
-        </div>
-    </nav>
+<body class="p-4">
+  <h3>Categories</h3>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <h2><i class="fas fa-tags text-warning"></i> Categories Management</h2>
-                <p class="text-muted">Quản lý danh mục sản phẩm</p>
-            </div>
-        </div>
+  <!-- Back button -->
+  <div class="mb-3">
+    <button class="btn btn-secondary" onclick="window.location.href='/'">← Quay lại trang chủ</button>
+  </div>
 
-        <!-- Add Category Form -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-plus"></i> Thêm danh mục mới
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="addCategoryForm">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Tên danh mục</label>
-                                        <input type="text" class="form-control" id="categoryName" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Hình ảnh</label>
-                                        <input type="text" class="form-control" id="categoryImages" placeholder="image.png">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Thêm danh mục
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Categories List -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-list"></i> Danh sách danh mục
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <c:if test="${empty categories}">
-                            <div class="text-center text-muted">
-                                <i class="fas fa-folder-open fa-2x"></i>
-                                <p class="mt-2">Không có danh mục nào</p>
-                            </div>
-                        </c:if>
-
-                        <c:if test="${not empty categories}">
-                            <div class="row">
-                                <c:forEach var="category" items="${categories}">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h6 class="card-title">
-                                                    <i class="fas fa-tag text-warning"></i> ${category.name}
-                                                </h6>
-
-                                                <c:choose>
-                                                    <c:when test="${not empty category.images}">
-                                                        <img src="${category.images}" 
-                                                             class="img-thumbnail mb-2" 
-                                                             style="width: 50px; height: 50px;" 
-                                                             alt="${category.name}">
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <i class="fas fa-image text-muted fa-2x mb-2"></i>
-                                                    </c:otherwise>
-                                                </c:choose>
-
-                                                <div class="mb-2">
-                                                    <strong>Người dùng:</strong>
-                                                    <c:if test="${empty category.users}">
-                                                        <span class="text-muted">Chưa có</span>
-                                                    </c:if>
-                                                    <c:forEach var="user" items="${category.users}">
-                                                        <span class="badge bg-success me-1">${user.fullname}</span>
-                                                    </c:forEach>
-                                                </div>
-
-                                                <div class="mb-2">
-                                                    <strong>Sản phẩm:</strong>
-                                                    <c:if test="${empty category.products}">
-                                                        <span class="text-muted">Chưa có</span>
-                                                    </c:if>
-                                                    <c:forEach var="prod" items="${category.products}">
-                                                        <span class="badge bg-primary me-1">${prod.title}</span>
-                                                    </c:forEach>
-                                                </div>
-
-                                                <button class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-trash"></i> Xóa
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </c:forEach>
-                            </div>
-                        </c:if>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Form -->
+  <form class="row g-2 mb-3" onsubmit="return saveCategory(event)">
+    <input type="hidden" id="catId"/>
+    <div class="col-md-4">
+      <input id="catName" class="form-control" placeholder="Name" required>
     </div>
+    <div class="col-md-5">
+      <input id="catImages" class="form-control" placeholder="Image URL">
+    </div>
+    <div class="col-md-3 d-grid">
+      <button class="btn btn-success" type="submit">Save</button>
+    </div>
+  </form>
+
+  <table class="table table-hover">
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Images</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+<script>
+async function gql(query, variables = {}) {
+  const res = await fetch('/graphql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables })
+  });
+  let json;
+  try { json = await res.json(); } catch(e) {
+    alert('Không đọc được JSON từ /graphql'); return {};
+  }
+  if (json.errors) {
+    alert(json.errors.map(e => e.message).join('\n'));
+  }
+  return json.data || {};
+}
+
+/* GraphQL */
+const Q = `query { categories { id name images } }`;
+const C = `mutation($input:CategoryInput!){
+  createCategory(input:$input){ id name images }
+}`;
+const U = `mutation($id:ID!, $input:CategoryInput!){
+  updateCategory(id:$id, input:$input){ id name images }
+}`;
+const D = `mutation($id:ID!){ deleteCategory(id:$id) }`;
+
+/* Load list */
+async function loadCategories(){
+  const d = await gql(Q);
+  const list = d.categories || [];
+  const tb = document.getElementById('rows');
+  tb.innerHTML = '';
+  list.forEach((c,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${c.name ?? ''}</td>
+      <td>${c.images ?? ''}</td>
+      <td>
+        <button class="btn btn-sm btn-primary me-1"
+                onclick='editCategory(${JSON.stringify(c).replaceAll("'","\\'")})'>Edit</button>
+        <button class="btn btn-sm btn-danger"
+                onclick="removeCategory('${c.id}')">Delete</button>
+      </td>`;
+    tb.appendChild(tr);
+  });
+}
+
+/* Edit -> fill form */
+function editCategory(c){
+  document.getElementById('catId').value = c.id;
+  document.getElementById('catName').value = c.name || '';
+  document.getElementById('catImages').value = c.images || '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* Save (create/update) */
+async function saveCategory(e){
+  if (e) e.preventDefault(); // stop default submit
+
+  const idEl = document.getElementById('catId');
+  const nameEl = document.getElementById('catName');
+  const imagesEl = document.getElementById('catImages');
+
+  const input = {
+    name: (nameEl.value || '').trim(),
+    images: (imagesEl.value || '').trim()
+  };
+  if (!input.name) { alert('Name is required'); return false; }
+
+  if (idEl.value) {
+    await gql(U, { id: idEl.value, input });    // variables.input
+  } else {
+    await gql(C, { input });                     // variables.input
+  }
+
+  // reset form + reload
+  idEl.value = '';
+  nameEl.value = '';
+  imagesEl.value = '';
+  await loadCategories();
+  return false; // also block page reload
+}
+
+/* Delete */
+async function removeCategory(id){
+  if (!confirm('Delete?')) return;
+  await gql(D, { id });
+  await loadCategories();
+}
+
+loadCategories();
+</script>
 </body>
 </html>

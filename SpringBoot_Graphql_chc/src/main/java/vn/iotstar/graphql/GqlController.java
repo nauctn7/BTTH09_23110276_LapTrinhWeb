@@ -81,29 +81,24 @@ public class GqlController {
 
   /* ===== CRUD: Category ===== */
   record CategoryInput(String name, String images) {}
-
   @MutationMapping
   public Category createCategory(@Argument CategoryInput input) {
-      Category c = new Category();
-      c.setName(input.name());
-      c.setImages(input.images());
-      return categoryRepo.save(c);
+    Category c = new Category();
+    c.setName(input.name());
+    c.setImages(input.images());
+    return categoryRepo.save(c);
   }
-
   @MutationMapping
   public Category updateCategory(@Argument Long id, @Argument CategoryInput input) {
-      Category c = categoryRepo.findById(id).orElseThrow();
-      c.setName(input.name());
-      c.setImages(input.images());
-      return categoryRepo.save(c);
+    Category c = categoryRepo.findById(id).orElseThrow();
+    c.setName(input.name());
+    c.setImages(input.images());
+    return categoryRepo.save(c);
   }
-
   @MutationMapping
   public Boolean deleteCategory(@Argument Long id) {
-      categoryRepo.deleteById(id);
-      return true;
+    categoryRepo.deleteById(id); return true;
   }
-
 
   /* ===== CRUD: Product ===== */
   record ProductInput(String title, Integer quantity, String description, Double price,
