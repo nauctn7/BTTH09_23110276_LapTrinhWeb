@@ -17,6 +17,7 @@ public class Product {
   private String description;
 
   private BigDecimal price;
+  private String image;
 
   @ManyToOne @JoinColumn(name = "user_id")
   private User user;

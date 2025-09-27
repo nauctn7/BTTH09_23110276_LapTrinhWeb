@@ -12,6 +12,7 @@ type Product {
     quantity: Int
     description: String
     price: Float
+    image: String
     user: User
     category: Category
 }
@@ -37,6 +38,7 @@ input ProductInput {
     quantity: Int
     description: String
     price: Float
+    image: String
     userId: ID!
     categoryId: ID!
 }

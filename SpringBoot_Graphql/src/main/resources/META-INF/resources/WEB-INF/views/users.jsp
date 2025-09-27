@@ -2,12 +2,14 @@
 <!DOCTYPE html><html><head>
 <title>Users</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head><body class="p-4">
-<h3>Users</h3>
- <!-- Nút quay lại -->
-  <div class="mb-3">
-    <button class="btn btn-secondary" onclick="window.location.href='/'">← Quay lại trang chủ</button>
-  </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3><i class="fas fa-users text-success"></i> Quản lý Người dùng</h3>
+  <button class="btn btn-secondary" onclick="window.location.href='/'">
+    <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+  </button>
+</div>
 <form class="row g-2 mb-3" onsubmit="return save()">
   <input type="hidden" id="id"/>
   <div class="col-md-3"><input id="fullname" class="form-control" placeholder="Full name" required></div>

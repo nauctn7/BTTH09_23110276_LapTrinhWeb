@@ -106,20 +106,33 @@ public class GqlController {
 
 
   /* ===== CRUD: Product ===== */
-  record ProductInput(String title, Integer quantity, String description, Double price,
+  record ProductInput(String title, Integer quantity, String description, Double price, String image,
                       Long userId, Long categoryId) {}
   @MutationMapping
   public Product createProduct(@Argument ProductInput input) {
-    User u = userRepo.findById(input.userId()).orElseThrow();
-    Category c = categoryRepo.findById(input.categoryId()).orElseThrow();
-    Product p = new Product();
-    p.setTitle(input.title());
-    p.setQuantity(input.quantity());
-    p.setDescription(input.description());
-    p.setPrice(BigDecimal.valueOf(input.price()));
-    p.setUser(u);
-    p.setCategory(c);
-    return productRepo.save(p);
+    try {
+      User u = userRepo.findById(input.userId()).orElseThrow(() -> new RuntimeException("User not found with id: " + input.userId()));
+      Category c = categoryRepo.findById(input.categoryId()).orElseThrow(() -> new RuntimeException("Category not found with id: " + input.categoryId()));
+      
+      Product p = new Product();
+      p.setTitle(input.title());
+      p.setQuantity(input.quantity());
+      p.setDescription(input.description());
+      
+      if (input.price() != null) {
+        p.setPrice(BigDecimal.valueOf(input.price()));
+      }
+      
+      p.setImage(input.image());
+      p.setUser(u);
+      p.setCategory(c);
+      
+      return productRepo.save(p);
+    } catch (Exception e) {
+      System.err.println("Error creating product: " + e.getMessage());
+      e.printStackTrace();
+      throw new RuntimeException("Error creating product: " + e.getMessage());
+    }
   }
   @MutationMapping
   public Product updateProduct(@Argument Long id, @Argument ProductInput input) {
@@ -127,7 +140,10 @@ public class GqlController {
     p.setTitle(input.title());
     p.setQuantity(input.quantity());
     p.setDescription(input.description());
-    p.setPrice(BigDecimal.valueOf(input.price()));
+    if (input.price() != null) {
+      p.setPrice(BigDecimal.valueOf(input.price()));
+    }
+    p.setImage(input.image());
     p.setUser(userRepo.findById(input.userId()).orElseThrow());
     p.setCategory(categoryRepo.findById(input.categoryId()).orElseThrow());
     return productRepo.save(p);
